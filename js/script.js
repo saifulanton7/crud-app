@@ -1,4 +1,4 @@
-const API_URL = 'https://script.google.com/macros/s/AKfycbxjpxR5V57fYNUfkDKhCHCCrnh3zjEy34kLXg4LbnI8iTqQVt2WZjfrfsOTDnw-s-Dctg/exec'; // Ganti dengan URL Google Apps Script-mu
+const API_URL = 'https://script.google.com/macros/s/AKfycbwt4MY-3UCh5vPlNP8fvqhl2OVkl38MIh9Mj6SsnD8Fz2KvMDRkISRtjJsUu50laDsdhQ/exec'; // Ganti dengan URL Google Apps Script-mu
 
 async function fetchData() {
   try {
