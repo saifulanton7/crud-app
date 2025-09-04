@@ -1,143 +1,47 @@
-html
-
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>CRUD Dashboard</title>
-  <style>
-    body { font-family: 'Segoe UI', sans-serif; margin: 20px; background: #f4f7fa; }
-    h1 { text-align: center; color: #2c3e50; }
-    .form-group { margin-bottom: 10px; }
-    input, button, select { padding: 8px; font-size: 14px; }
-    button { background: #3498db; color: white; border: none; cursor: pointer; margin-right: 5px; }
-    button:hover { background: #2980b9; }
-    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-    th, td { border: 1px solid #ccc; padding: 10px; text-align: center; }
-    th { background: #3498db; color: white; }
-    .edit-btn { background: #f39c12; }
-    .delete-btn { background: #e74c3c; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem CRUD dengan Spreadsheet & Netlify</title>
+    <!-- Link ke file CSS -->
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <h1>📋 Sistem CRUD dengan Spreadsheet & Netlify</h1>
+    <div class="container">
+        <h1>Sistem CRUD dengan Spreadsheet & Netlify</h1>
 
-  <!-- Form Create -->
-  <div class="form-group">
-    <input type="text" id="inputNama" placeholder="Nama" required />
-    <input type="text" id="inputDeskripsi" placeholder="Deskripsi" />
-    <select id="inputStatus">
-      <option value="Belum Selesai">Belum Selesai</option>
-      <option value="Sedang Dikerjakan">Sedang Dikerjakan</option>
-      <option value="Selesai">Selesai</option>
-    </select>
-    <button onclick="createData()">Tambah</button>
-  </div>
+        <div class="form-container">
+            <!-- Form untuk tambah/edit data -->
+            <input type="text" id="id" placeholder="ID">
+            <input type="text" id="nama" placeholder="Nama">
+            <input type="text" id="deskripsi" placeholder="Deskripsi">
+            <select id="status">
+                <option value="Belum Selesai">Belum Selesai</option>
+                <option value="Selesai">Selesai</option>
+            </select>
+            <input type="date" id="tanggal">
+            <button id="addButton">Tambah</button>
+        </div>
 
-  <!-- Table Data -->
-  <table id="dataTable">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Nama</th>
-        <th>Deskripsi</th>
-        <th>Status</th>
-        <th>Tanggal</th>
-        <th>Aksi</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+        <table id="dataTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nama</th>
+                    <th>Deskripsi</th>
+                    <th>Status</th>
+                    <th>Tanggal</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Data akan dimuat di sini oleh JavaScript -->
+            </tbody>
+        </table>
+    </div>
 
-  <script>
-    const API_URL = 'https://script.google.com/macros/s/YOUR_DEPLOYED_CODE/exec'; // Ganti dengan URL API kamu
-
-    // Read Data
-    function fetchData() {
-      fetch(API_URL)
-        .then(res => res.json())
-        .then(data => {
-          const tbody = document.querySelector('#dataTable tbody');
-          tbody.innerHTML = '';
-          data.forEach(item => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-              <td>${item.ID}</td>
-              <td>${item.Nama}</td>
-              <td>${item.Deskripsi}</td>
-              <td>${item.Status}</td>
-              <td>${item.Tanggal}</td>
-              <td>
-                <button class="edit-btn" onclick="editData('${item.ID}')">Edit</button>
-                <button class="delete-btn" onclick="deleteData('${item.ID}')">Hapus</button>
-              </td>
-            `;
-            tbody.appendChild(tr);
-          });
-        })
-        .catch(err => alert('Gagal memuat data: ' + err));
-    }
-
-    // Create Data
-    function createData() {
-      const nama = document.getElementById('inputNama').value;
-      const deskripsi = document.getElementById('inputDeskripsi').value;
-      const status = document.getElementById('inputStatus').value;
-
-      fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nama, deskripsi, status })
-      })
-      .then(res => res.json())
-      .then(data => {
-        alert(data.message);
-        document.getElementById('inputNama').value = '';
-        document.getElementById('inputDeskripsi').value = '';
-        fetchData(); // Reload data
-      })
-      .catch(err => alert('Gagal menambah: ' + err));
-    }
-
-    // Edit Data
-    function editData(id) {
-      const nama = prompt('Edit Nama:', '');
-      const deskripsi = prompt('Edit Deskripsi:', '');
-      const status = prompt('Edit Status (Belum Selesai/Sedang Dikerjakan/Selesai):', '');
-
-      if (nama === null || deskripsi === null || status === null) return;
-
-      fetch(API_URL, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, nama, deskripsi, status })
-      })
-      .then(res => res.json())
-      .then(data => {
-        alert(data.message);
-        fetchData();
-      })
-      .catch(err => alert('Gagal mengedit: ' + err));
-    }
-
-    // Delete Data
-    function deleteData(id) {
-      if (!confirm('Yakin ingin menghapus?')) return;
-
-      fetch(`${API_URL}?id=${id}`, {
-        method: 'DELETE'
-      })
-      .then(res => res.json())
-      .then(data => {
-        alert(data.message);
-        fetchData();
-      })
-      .catch(err => alert('Gagal menghapus: ' + err));
-    }
-
-    // Load data on page load
-    window.onload = fetchData;
-  </script>
+    <!-- Link ke file JavaScript -->
+    <script src="js/script.js"></script>
 </body>
 </html>
